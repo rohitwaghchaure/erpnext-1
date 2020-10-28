@@ -56,7 +56,7 @@ frappe.ui.form.on("BOM", {
 				filters: {
 					'item': d.item_code,
 					'is_active': 1,
-					'docstatus': 1
+					'docstatus': 0
 				}
 			};
 		});
@@ -91,7 +91,7 @@ frappe.ui.form.on("BOM", {
 			});
 		}
 
-		if(frm.doc.docstatus!=0) {
+		if (!frm.is_new()) {
 			frm.add_custom_button(__("Work Order"), function() {
 				frm.trigger("make_work_order");
 			}, __("Create"));
@@ -131,11 +131,10 @@ frappe.ui.form.on("BOM", {
 
 
 		if (frm.doc.has_variants) {
-			frm.set_intro(__('This is a Template BOM and will be used to make the work order for {0} of the item {1}',
-				[
-					`<a class="variants-intro">variants</a>`,
-					`<a href="#Form/Item/${frm.doc.item}">${frm.doc.item}</a>`,
-				]), true);
+			frm.set_intro(__('This is a Template BOM and will be used to make the work order for {0} of the item {1}', [
+				`<a class="variants-intro">variants</a>`,
+				`<a href="#Form/Item/${frm.doc.item}">${frm.doc.item}</a>`,
+			]), true);
 
 			frm.$wrapper.find(".variants-intro").on("click", () => {
 				frappe.set_route("List", "Item", {"variant_of": frm.doc.item});
@@ -324,7 +323,7 @@ frappe.ui.form.on("BOM", {
 			args: {
 				update_parent: true,
 				from_child_bom:false,
-				save: frm.doc.docstatus === 1 ? true : false
+				save: frm.doc.docstatus === 0 ? true : false
 			},
 			callback: function(r) {
 				refresh_field("items");
@@ -436,7 +435,6 @@ var get_bom_material_detail = function(doc, cdt, cdn, scrap_items) {
 				"scrap_items": scrap_items,
 				"qty": d.qty,
 				"stock_qty": d.stock_qty,
-				"include_item_in_manufacturing": d.include_item_in_manufacturing,
 				"uom": d.uom,
 				"stock_uom": d.stock_uom,
 				"conversion_factor": d.conversion_factor,

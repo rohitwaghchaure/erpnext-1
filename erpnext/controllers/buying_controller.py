@@ -424,7 +424,11 @@ class BuyingController(StockController):
 		if hasattr(item, 'include_exploded_items'):
 			exploded_item = item.get('include_exploded_items')
 
-		bom_items = get_items_from_bom(item.item_code, item.bom, exploded_item)
+		if item.get("purchase_order") and item.get("purchase_order_item"):
+			bom_items = get_items_from_po(item.item_code,
+				item.purchase_order, item.purchase_order_item)
+		else:
+			bom_items = get_items_from_bom(item.item_code, item.bom, exploded_item)
 
 		used_alternative_items = []
 		if self.doctype in ["Purchase Receipt", "Purchase Invoice"] and item.purchase_order:
@@ -869,6 +873,19 @@ class BuyingController(StockController):
 		else:
 			validate_item_type(self, "is_purchase_item", "purchase")
 
+def get_items_from_po(item_code, purchase_order, purchase_order_item):
+	purchase_order_qty = frappe.db.get_value("Purchase Order Item", {"parent": purchase_order,
+		"name": purchase_order_item}, "qty")
+
+	if purchase_order_qty:
+		return frappe.db.sql(""" SELECT rm_item_code as item_code, name,
+				rate, stock_uom, reserve_warehouse as source_warehouse, description,
+				required_qty / {purchase_order_qty} as qty_consumed_per_unit
+			FROM
+				`tabPurchase Order Item Supplied`
+			WHERE main_item_code = %s and parent = %s and reference_name = %s
+		""".format(purchase_order_qty=purchase_order_qty),
+		(item_code, purchase_order, purchase_order_item), as_dict=1)
 
 def get_items_from_bom(item_code, bom, exploded_item=1):
 	doctype = "BOM Item" if not exploded_item else "BOM Explosion Item"
@@ -880,7 +897,7 @@ def get_items_from_bom(item_code, bom, exploded_item=1):
 			`tabBOM` t1, `tab{0}` t2, tabItem t3
 		where
 			t2.parent = t1.name and t1.item = %s
-			and t1.docstatus = 1 and t1.is_active = 1 and t1.name = %s
+			and t1.docstatus < 2 and t1.is_active = 1 and t1.name = %s
 			and t2.sourced_by_supplier = 0
 			and t2.item_code = t3.name""".format(doctype),
 			(item_code, bom), as_dict=1)

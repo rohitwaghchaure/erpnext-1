@@ -515,16 +515,14 @@
  "icon": "fa fa-sitemap",
  "idx": 1,
  "image_field": "image",
- "is_submittable": 1,
  "links": [],
- "modified": "2020-05-21 12:29:32.634952",
+ "modified": "2020-10-26 16:39:17.838982",
  "modified_by": "Administrator",
  "module": "Manufacturing",
  "name": "BOM",
  "owner": "Administrator",
  "permissions": [
   {
-   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -533,11 +531,9 @@
    "report": 1,
    "role": "Manufacturing Manager",
    "share": 1,
-   "submit": 1,
    "write": 1
   },
   {
-   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -546,7 +542,6 @@
    "report": 1,
    "role": "Manufacturing User",
    "share": 1,
-   "submit": 1,
    "write": 1
   }
  ],
