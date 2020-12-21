@@ -308,6 +308,9 @@ class ProductionPlan(Document):
 		items_data = self.get_production_items()
 
 		for key, item in items_data.items():
+			if item.get("make_work_order_for_sub_assembly_items"):
+				item["use_multi_level_bom"] = 0
+
 			work_order = self.create_work_order(item)
 			if work_order:
 				wo_list.append(work_order)

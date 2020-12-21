@@ -35,6 +35,8 @@
   "column_break_15",
   "section_break_8",
   "items",
+  "section_break_30",
+  "scrap_items",
   "more_information",
   "operation_id",
   "sequence_id",
@@ -314,11 +316,21 @@
    "label": "Quality Inspection",
    "no_copy": 1,
    "options": "Quality Inspection"
+  },
+  {
+   "fieldname": "section_break_30",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "scrap_items",
+   "fieldtype": "Table",
+   "label": "Scrap Items",
+   "options": "Work Order Scrap Item"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-11-19 18:26:50.531664",
+ "modified": "2020-12-21 07:51:14.068158",
  "modified_by": "Administrator",
  "module": "Manufacturing",
  "name": "Job Card",

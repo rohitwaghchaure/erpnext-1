@@ -25,6 +25,7 @@ class JobCard(Document):
 		self.set_status()
 		self.validate_operation_id()
 		self.validate_sequence_id()
+		self.set_operation_for_scrap_items()
 
 	def validate_time_logs(self):
 		self.total_completed_qty = 0.0
@@ -357,6 +358,11 @@ class JobCard(Document):
 			if row.status != "Completed" and row.completed_qty < current_operation_qty:
 				frappe.throw(_("{0}, complete the operation {1} before the operation {2}.")
 					.format(message, bold(row.operation), bold(self.operation)), OperationSequenceError)
+
+	def set_operation_for_scrap_items(self):
+		if self.scrap_items:
+			for row in self.scrap_items:
+				row.operation = self.operation
 
 @frappe.whitelist()
 def get_operation_details(work_order, operation):
