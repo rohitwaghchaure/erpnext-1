@@ -14,11 +14,8 @@ from erpnext.selling.doctype.sales_order.test_sales_order import make_sales_orde
 from erpnext.stock.doctype.item.test_item import make_item
 from erpnext.manufacturing.doctype.production_plan.test_production_plan import make_bom
 from erpnext.stock.doctype.warehouse.test_warehouse import create_warehouse
-<<<<<<< HEAD
 from erpnext.manufacturing.doctype.job_card.job_card import JobCardCancelError
-=======
 from erpnext.stock.doctype.serial_no.serial_no import get_serial_nos
->>>>>>> feat: removed Is Submittable property for the BOM doctype
 
 class TestWorkOrder(unittest.TestCase):
 	def setUp(self):
@@ -336,7 +333,6 @@ class TestWorkOrder(unittest.TestCase):
 		data = frappe.get_cached_value('BOM',
 			{"with_operations": 1, "company": "_Test Company", "is_active": 1}, ["name", "item"])
 
-<<<<<<< HEAD
 		bom, bom_item = data
 
 		bom_doc = frappe.get_doc('BOM', bom)
@@ -376,19 +372,6 @@ class TestWorkOrder(unittest.TestCase):
 		stock_entries.reverse()
 		for stock_entry in stock_entries:
 			stock_entry.cancel()
-=======
-		frappe.db.set_value("Manufacturing Settings",
-			None, "disable_capacity_planning", 0)
-
-		bom, bom_item = data
-
-		bom_doc = frappe.get_doc('BOM', bom)
-		work_order = make_wo_order_test_record(item=bom_item, qty=1, bom_no=bom)
-		self.assertTrue(work_order.planned_end_date)
-
-		job_cards = frappe.get_all('Job Card', filters = {'work_order': work_order.name})
-		self.assertEqual(len(job_cards), len(bom_doc.operations))
->>>>>>> feat: removed Is Submittable property for the BOM doctype
 
 	def test_capcity_planning(self):
 		frappe.db.set_value("Manufacturing Settings", None, {
@@ -396,7 +379,7 @@ class TestWorkOrder(unittest.TestCase):
 			"capacity_planning_for_days": 1
 		})
 
-		data = frappe.get_cached_value("BOM", {"item": "_Test FG Item 2",
+		data = frappe.get_cached_value("BOM", {'docstatus': 1, "item": "_Test FG Item 2",
 			"with_operations": 1, "company": "_Test Company", "is_active": 1}, ["name", "item"])
 
 		if data:
@@ -651,29 +634,6 @@ class TestWorkOrder(unittest.TestCase):
 
 		cancel_stock_entry_list.reverse()
 		cancel_document("Stock Entry", cancel_stock_entry_list)
-
-	def test_change_bom_after_work_order_creation(self):
-		fg_item = "Test FG Item A-1"
-
-		wo = make_wo_order_test_record(item_code=fg_item, qty=4)
-		self.assertEquals(len(wo.required_items), 3)
-
-		bom_doc = frappe.get_doc("BOM", wo.bom_no)
-		self.assertEquals(bom_doc.docstatus, 0)
-
-		# made changes in the bom, but as work order has created before, system will use work order items data
-		bom_doc.items[0].qty = 2
-		bom_doc.save()
-
-		wo.load_from_db()
-
-		stock_entry = frappe.get_doc(make_stock_entry(wo.name, "Material Transfer for Manufacture", 4))
-		for row in stock_entry.items:
-			self.assertEquals(row.qty, 4)
-
-		bom_doc.load_from_db()
-		bom_doc.items[0].qty = 1
-		bom_doc.save()
 
 def create_stock_entry_for_raw_materials(wo_doc, warehouse, itemwise_serial_nos, cancel_stock_entry_list):
 	for row in wo_doc.required_items:

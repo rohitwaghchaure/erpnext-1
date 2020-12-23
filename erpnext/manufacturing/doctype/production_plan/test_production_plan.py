@@ -262,4 +262,7 @@ def make_bom(**args):
 	if not args.do_not_save:
 		bom.insert(ignore_permissions=True)
 
+		if not args.do_not_submit:
+			bom.submit()
+
 	return bom

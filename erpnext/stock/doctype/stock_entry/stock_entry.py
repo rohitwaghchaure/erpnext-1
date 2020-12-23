@@ -464,7 +464,7 @@ class StockEntry(StockController):
 		"""
 		# Set rate for outgoing items
 		outgoing_items_cost = self.set_rate_for_outgoing_items(reset_outgoing_rate)
-		finished_item_qty = sum([d.transfer_qty for d in self.items if d.is_finished_item])
+		finished_item_qty = sum([flt(d.transfer_qty) for d in self.items if d.is_finished_item])
 
 		# Set basic rate for incoming items
 		for d in self.get('items'):
@@ -535,7 +535,7 @@ class StockEntry(StockController):
 			wo_items = self.wo_doc.required_items
 			outgoing_items_cost = sum([flt(row.required_qty)*flt(row.rate) for row in wo_items])
 
-		return flt((outgoing_items_cost - scrap_items_cost) / finished_item_qty)
+		return flt(flt(outgoing_items_cost - scrap_items_cost) / flt(finished_item_qty))
 
 	def distribute_additional_costs(self):
 		# If no incoming items, set additional costs blank
