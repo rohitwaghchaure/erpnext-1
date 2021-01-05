@@ -27,7 +27,6 @@
   "column_break_17",
   "serial_no",
   "batch_size",
-  "batches",
   "settings_section",
   "allow_alternative_item",
   "use_multi_level_bom",
@@ -536,14 +535,6 @@
    "fieldname": "batch_size",
    "fieldtype": "Float",
    "label": "Batch Size"
-  },
-  {
-   "depends_on": "has_batch_no",
-   "fieldname": "batches",
-   "fieldtype": "Table",
-   "label": "Batches",
-   "options": "Work Order Batch",
-   "read_only": 1
   }
  ],
  "icon": "fa fa-cogs",
@@ -551,7 +542,7 @@
  "image_field": "image",
  "is_submittable": 1,
  "links": [],
- "modified": "2021-01-04 16:53:49.321031",
+ "modified": "2021-01-07 10:49:16.448380",
  "modified_by": "Administrator",
  "module": "Manufacturing",
  "name": "Work Order",
