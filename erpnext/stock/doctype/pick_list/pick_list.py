@@ -25,9 +25,9 @@ class PickList(Document):
 			if not frappe.get_cached_value('Item', item.item_code, 'has_serial_no'):
 				continue
 			if not item.serial_no:
-				frappe.throw(_("Row #{0}: {1} does not have any available serial numbers in {2}".format(
-					frappe.bold(item.idx), frappe.bold(item.item_code), frappe.bold(item.warehouse))),
-					title=_("Serial Nos Required"))
+				frappe.throw(_("Row #{0}: {1} does not have any available serial numbers in {2}")
+					.format(frappe.bold(item.idx), frappe.bold(item.item_code), frappe.bold(item.warehouse)),
+						title=_("Serial Nos Required"))
 			if len(item.serial_no.split('\n')) == item.picked_qty:
 				continue
 			frappe.throw(_('For item {0} at row {1}, count of serial numbers does not match with the picked quantity')
@@ -378,9 +378,8 @@ def create_stock_entry(pick_list):
 	else:
 		stock_entry = update_stock_entry_items_with_no_reference(pick_list, stock_entry)
 
-	stock_entry.set_incoming_rate()
 	stock_entry.set_actual_qty()
-	stock_entry.calculate_rate_and_amount(update_finished_item_rate=False)
+	stock_entry.calculate_rate_and_amount()
 
 	return stock_entry.as_dict()
 
